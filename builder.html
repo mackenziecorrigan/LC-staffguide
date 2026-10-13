@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Prompt builder | Life Church Staff Resource</title><link rel="stylesheet" href="style.css"></head>
+<body>
+<header class="top"><div class="wrap"><a class="brand" href="index.html">life.church <span>/ staff</span></a>
+<nav aria-label="Pages"><a href="when.html">When to use it</a><a href="library.html">Team library</a><a href="ideas.html">Starter ideas</a><a href="builder.html" aria-current="page">Prompt builder</a><a href="find.html">Your role</a><a href="care.html">Using it well</a><a href="share.html">Share yours</a></nav></div></header>
+<main class="page"><div class="wrap">
+<div class="eyebrow">03 · Prompt builder</div>
+<h1>Build a better request.</h1>
+<p class="lead">Strong requests share the same ingredients. Fill in what you know and skip the rest.</p>
+<div class="two"><div>
+<label for="b1">Who are you / what is the situation?</label><textarea id="b1" rows="2" placeholder="I am the [role] planning [event] for [group]."></textarea>
+<label for="b2">What do you need?</label><textarea id="b2" rows="2" placeholder="Draft a 3-week timeline and volunteer checklist."></textarea>
+<label for="b3">Who is it for?</label><input type="text" id="b3" placeholder="First-time guests, volunteers, parents">
+<label for="b4">Format and tone</label><input type="text" id="b4" placeholder="Short email, warm and clear / a table">
+<label for="b5">Include or avoid</label><input type="text" id="b5" placeholder="Under 150 words, no church jargon, $500 budget"></div>
+<div><label>Your prompt</label><div class="out" id="bout" aria-live="polite">Start typing and your prompt will appear here.</div>
+<div class="row"><button class="btn sm" data-copy="bout">Copy prompt</button><button class="btn sm alt" id="reset">Clear</button></div>
+<p style="color:var(--muted);font-size:.9rem;margin-top:16px">Tip: keep going after the first answer. “Make it shorter.” “Give me three more options.” “What did you assume?”</p></div></div>
+<div class="next"><a href="library.html">Team library</a><a href="ideas.html">← Idea library</a><a href="find.html">Next: Your role →</a></div>
+</div></main>
+<footer><div class="wrap">Created by and for Life Church staff. <a href="index.html">Home</a></div></footer>
+<script src="app.js"></script>
+<script>
+var f=["b1","b2","b3","b4","b5"].map(function(i){return document.getElementById(i)}),out=document.getElementById("bout");
+function build(){var v=f.map(function(x){return x.value.trim()});
+var p=[v[0],v[1]&&"Task: "+v[1],v[2]&&"Audience: "+v[2],v[3]&&"Format and tone: "+v[3],v[4]&&"Constraints: "+v[4]].filter(Boolean).join("\n\n");
+out.textContent=p?p+"\n\nIf anything is unclear, ask me up to 3 questions before you start.":"Start typing and your prompt will appear here."}
+f.forEach(function(x){x.addEventListener("input",build)});
+document.getElementById("reset").onclick=function(){f.forEach(function(x){x.value=""});build()};
+</script>
+</body></html>
