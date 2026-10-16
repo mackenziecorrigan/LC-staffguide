@@ -7,34 +7,52 @@
 <main class="page"><div class="wrap">
 <div class="eyebrow">Share yours</div>
 <h1>Pass along what worked.</h1>
-<p class="lead">Five minutes now could save a colleague hours. Fill this in and it opens a pre-filled form on GitHub for you to review and submit. A maintainer checks it before it appears in the library.</p>
-<div class="form">
-<label for="f_title">What did you do?</label><input type="text" id="f_title" placeholder="Weekend volunteer reminder emails">
+<p class="lead">Five minutes now could save a colleague hours. No account needed. A maintainer reviews every submission before it appears in the Team library.</p>
+<div id="formwrap"><div class="form">
+<label for="f_title">What did you do?</label><input type="text" id="f_title" maxlength="120" placeholder="Weekend volunteer reminder messages">
 <label for="f_category">Type</label><select id="f_category"><option>Organize</option><option>Create</option><option>Communicate</option><option>Plan</option><option>Collaborate</option><option>Think</option></select>
 <label for="f_team">Your team</label><select id="f_team"><option>Kids</option><option>Students</option><option>Worship and production</option><option>Communications</option><option>Operations and admin</option><option>Care</option><option>Groups</option><option>Leadership</option><option>Other</option></select>
-<label for="f_summary">What problem did it solve?</label><textarea id="f_summary" rows="3" placeholder="Two or three sentences. What was the task and what changed?"></textarea>
-<label for="f_prompt">The prompt you used</label><textarea id="f_prompt" rows="5" placeholder="Replace names and private details with [brackets]."></textarea>
-<label for="f_tool">Tool used (optional)</label><input type="text" id="f_tool">
-<label for="f_timesaved">Time saved (optional)</label><input type="text" id="f_timesaved" placeholder="About 2 hours a week">
-<label for="f_tips">Tips for the next person (optional)</label><textarea id="f_tips" rows="2"></textarea>
-<label for="f_contributor">Name to show (optional)</label><input type="text" id="f_contributor" placeholder="Leave blank to stay anonymous">
+<label for="f_summary">What problem did it solve?</label><textarea id="f_summary" rows="3" maxlength="1000" placeholder="Two or three sentences. What was the task and what changed?"></textarea>
+<label for="f_prompt">The prompt you used</label><textarea id="f_prompt" rows="5" maxlength="4000" placeholder="Replace names and private details with [brackets]."></textarea>
+<label for="f_tool">Tool used (optional)</label><input type="text" id="f_tool" maxlength="80">
+<label for="f_timesaved">Time saved (optional)</label><input type="text" id="f_timesaved" maxlength="80" placeholder="About 2 hours a week">
+<label for="f_tips">Tips for the next person (optional)</label><textarea id="f_tips" rows="2" maxlength="1000"></textarea>
+<label for="f_assettext">Reusable text or template (optional)</label><textarea id="f_assettext" rows="4" maxlength="4000" placeholder="Paste a checklist, template, or sample others can reuse."></textarea>
+<label for="f_assetlink">Link to a shared file (optional)</label><input type="text" id="f_assetlink" placeholder="https://… (make sure staff can open it)">
+<label for="f_contributor">Name to show (optional)</label><input type="text" id="f_contributor" maxlength="60" placeholder="Leave blank to stay anonymous">
+<div id="pcwrap" style="display:none"><label for="f_passcode">Staff passcode</label><input type="text" id="f_passcode" autocomplete="off"></div>
+<div style="position:absolute;left:-9999px" aria-hidden="true"><label for="f_website">Leave this empty</label><input type="text" id="f_website" tabindex="-1" autocomplete="off"></div>
+<label style="font-weight:400;display:flex;gap:10px;align-items:flex-start;margin-top:18px"><input type="checkbox" id="f_privacy" style="margin-top:4px"><span>This contains no private information about people, such as prayer requests, counseling, health, finances, or children&rsquo;s details.</span></label>
 </div>
-<p class="note" style="margin-top:16px"><b>Before you share:</b> remove names and private details about people, including prayer requests, counseling, health, finances, and anything about children. You can attach a template or file on the GitHub form.</p>
-<div class="row"><button class="btn" id="go">Open on GitHub</button></div>
-<p class="note" id="msg"></p>
+<div class="row"><button class="btn" id="go">Submit</button></div>
+<p class="note" id="msg" role="status" aria-live="polite"></p></div>
+<div id="thanks" class="card" style="display:none"><h3>Thank you.</h3><p>Your use case was sent. After a quick review it will appear in the <a href="library.html">Team library</a>. <a href="share.html">Share another</a>.</p></div>
 </div></main>
 <footer><div class="wrap">Created by and for Life Church staff. <a href="index.html">Home</a></div></footer>
-<script src="config.js"></script><script src="app.js"></script><script>
+<script src="config.js"></script><script src="app.js"></script>
+<script>
 (function(){
-var ids=["title","category","team","summary","prompt","tool","timesaved","tips","contributor"];
-document.getElementById("go").onclick=function(){
-  var s=window.SITE||{},m=document.getElementById("msg");
-  if(!s.repo||/YOUR-ORG/.test(s.repo)){m.textContent="This site has not been connected to its repository yet. Set the repo name in config.js.";return}
-  var u="https://github.com/"+s.repo+"/issues/new?template=share-use-case.yml";
-  ids.forEach(function(i){var v=document.getElementById("f_"+i).value.trim();if(v)u+="&"+i+"="+encodeURIComponent(v)});
-  var t=document.getElementById("f_title").value.trim();if(t)u+="&title="+encodeURIComponent("Use case: "+t);
-  window.open(u,"_blank","noopener");
-  m.textContent=s.contact?"No GitHub account? Send your answers to "+s.contact+" and a maintainer can add them for you.":"";
+var S=window.SITE||{},ids=["title","category","team","summary","prompt","tool","timesaved","tips","assettext","assetlink","contributor"];
+var msg=document.getElementById("msg"),btn=document.getElementById("go");
+if(S.requirePasscode)document.getElementById("pcwrap").style.display="block";
+function v(i){return document.getElementById("f_"+i).value.trim()}
+btn.onclick=function(){
+  if(!v("title")||!v("summary")){msg.textContent="Please fill in what you did and what problem it solved.";return}
+  if(!v("prompt")&&!v("assettext")&&!v("assetlink")){msg.textContent="Please add a prompt, a template, or a link to a shared file.";return}
+  if(!document.getElementById("f_privacy").checked){msg.textContent="Please confirm the privacy check.";return}
+  if(!S.endpoint){ // fallback: pre-filled GitHub form
+    var u="https://github.com/"+S.repo+"/issues/new?template=share-use-case.yml&title="+encodeURIComponent("Use case: "+v("title"));
+    ids.forEach(function(i){if(v(i))u+="&"+(i==="assettext"?"assettext":i==="assetlink"?"assetlink":i)+"="+encodeURIComponent(v(i))});
+    window.open(u,"_blank","noopener");return}
+  btn.disabled=true;msg.textContent="Sending…";
+  fetch(S.endpoint,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({
+    title:v("title"),category:v("category"),team:v("team"),summary:v("summary"),prompt:v("prompt"),tool:v("tool"),timeSaved:v("timesaved"),
+    tips:v("tips"),assetText:v("assettext"),assetLink:v("assetlink"),contributor:v("contributor"),passcode:v("passcode"),website:v("website"),privacy:true})})
+  .then(function(r){return r.json().catch(function(){return{}}).then(function(j){return{ok:r.ok,j:j}})})
+  .then(function(x){
+    if(x.ok){document.getElementById("formwrap").style.display="none";document.getElementById("thanks").style.display="block";window.scrollTo(0,0)}
+    else{msg.textContent=(x.j&&x.j.error)||"Something went wrong. Please try again.";btn.disabled=false}})
+  .catch(function(){msg.textContent="We could not reach the server. Please try again"+(S.contact?" or send it to "+S.contact+".":".");btn.disabled=false});
 };})();
 </script>
 </body></html>
