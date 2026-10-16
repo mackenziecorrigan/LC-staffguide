@@ -1,1 +1,1 @@
-window.SITE={repo:"mackenziecorrigan/LC-staffguide",contact:"mackenziecorrigan@outlook.com"}; // contact: optional email or channel for people without a GitHub account
+window.SITE={repo:"mackenziecorrigan/LC-staffguide",endpoint:"https://lc-staff-share.mackenziecorrigan.workers.dev",requirePasscode:false,contact:"mackenziecorrigan@outlook.com"};
