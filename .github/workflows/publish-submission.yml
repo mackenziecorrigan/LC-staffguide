@@ -1,0 +1,114 @@
+
+name: Publish approved submissions
+
+on:
+  issues:
+    types: [labeled]
+
+permissions:
+  contents: write
+  issues: write
+
+jobs:
+  publish:
+    if: github.event.label.name == 'approved'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+
+      - name: Publish issue to library
+        env:
+          ISSUE_TITLE: ${{ github.event.issue.title }}
+          ISSUE_BODY: ${{ github.event.issue.body }}
+          ISSUE_URL: ${{ github.event.issue.html_url }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+        run: |
+          python - <<'PY'
+          import json
+          import os
+          import re
+          from pathlib import Path
+          from datetime import date
+
+          path = Path("library/index.json")
+          path.parent.mkdir(parents=True, exist_ok=True)
+
+          if path.exists():
+              data = json.loads(path.read_text(encoding="utf-8"))
+          else:
+              data = {"entries": []}
+
+          entries = data.setdefault("entries", [])
+          issue_number = int(os.environ["ISSUE_NUMBER"])
+
+          # Prevent duplicate entries if the workflow is rerun.
+          if any(str(e.get("issueNumber", "")) == str(issue_number)
+                 for e in entries):
+              print("This issue has already been published.")
+              raise SystemExit(0)
+
+          body = os.environ.get("ISSUE_BODY", "")
+
+          # Parse GitHub form fields such as:
+          # **Team**: Kids
+          # ### Team
+          # Kids
+          def field(*names):
+              for name in names:
+                  patterns = [
+                      rf"(?im)^\s*\*\*{re.escape(name)}\*\*\s*:?\s*(.+?)\s*$",
+                      rf"(?ims)^###\s*{re.escape(name)}\s*\n+(.+?)(?=\n###\s|\Z)"
+                  ]
+                  for pattern in patterns:
+                      match = re.search(pattern, body)
+                      if match:
+                          return match.group(1).strip()
+              return ""
+
+          title = os.environ.get("ISSUE_TITLE", "")
+          title = re.sub(r"^Use case:\s*", "", title, flags=re.I)
+
+          entry = {
+              "title": title,
+              "category": field("Category", "Type"),
+              "team": field("Team", "Your team"),
+              "summary": field("Summary", "Problem", "What problem did it solve?"),
+              "prompt": field("Prompt", "The prompt you used"),
+              "tool": field("Tool", "Tool used"),
+              "timeSaved": field("Time saved", "Time Saved"),
+              "tips": field("Tips", "Tips for the next person"),
+              "assetText": field("Asset text", "Reusable text or template"),
+              "assetLink": field("Asset link", "Link to a shared file"),
+              "contributor": field("Contributor", "Name to show"),
+              "date": date.today().isoformat(),
+              "issueNumber": issue_number,
+              "sourceIssue": os.environ["ISSUE_URL"]
+          }
+
+          entries.append(entry)
+          data["entries"] = entries
+          path.write_text(
+              json.dumps(data, indent=2, ensure_ascii=False) + "\n",
+              encoding="utf-8"
+          )
+          PY
+
+      - name: Commit published entry
+        run: |
+          if git diff --quiet -- library/index.json; then
+            echo "No changes to publish."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email \
+            "41898282+github-actions[bot]@users.noreply.github.com"
+          git add library/index.json
+          git commit -m "Publish approved submission #${{ github.event.issue.number }}"
+          git push
