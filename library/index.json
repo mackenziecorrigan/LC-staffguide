@@ -1,4 +1,20 @@
-
 {
-  "entries": []
+  "entries": [
+    {
+      "title": "Staff AI use case guide and repository",
+      "category": "Communicate",
+      "team": "Other",
+      "summary": "Assist staff in finding ways to use AI in their workflows.",
+      "prompt": "Create a guide for staff and leaders at Life Church to use to enhance task prompting/generation ideation. I have found as an individual contributor, the biggest challenge integrating AI into my workflows and processes is thinking of use cases for AI. It can be difficult to know WHEN to use AI, not just HOW to use AI (though that is another piece to consider). The leader in AI power changes frequently, but creativity for use cases is somewhat stable. I want to create a webpage with information to help staff know when to use AI in their roles and to get them thinking creatively about how AI could free up some of their time or just be a thought partner in the work they do. Help them think about how AI can help them keep their work more organized, such as creating task tracker databases/artifacts, think creatively about how to complete deliverables or come up with new deliverable ideas, creating artifacts for team collaboration, asset creation, and more. Keep in mind the type of work that Life Church staff are focused on and that it is servant work. Utilize Life Church branding and styling. Provide an output that is HTML, CSS, and/or JavaScript that I can host on GitHub. The output should be a valuable resource that makes finding answers and assistance easy. Avoid making the output appear too heavily AI.",
+      "tool": "",
+      "timeSaved": "",
+      "tips": "",
+      "assetText": "",
+      "assetLink": "",
+      "contributor": "",
+      "date": "2026-10-16",
+      "issueNumber": 4,
+      "sourceIssue": "https://github.com/mackenziecorrigan/LC-staffguide/issues/4"
+    }
+  ]
 }
