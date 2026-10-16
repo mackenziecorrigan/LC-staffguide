@@ -1,0 +1,90 @@
+
+name: Share a use case
+description: Submit a practical AI use case for the Team Library
+title: "Use case: "
+labels: []
+body:
+  - type: markdown
+    attributes:
+      value: "Please remove private or sensitive information before submitting."
+
+  - type: input
+    id: title
+    attributes:
+      label: What did you do?
+      placeholder: Weekend volunteer reminder messages
+    validations:
+      required: true
+
+  - type: dropdown
+    id: category
+    attributes:
+      label: Type
+      options:
+        - Organize
+        - Create
+        - Communicate
+        - Plan
+        - Collaborate
+        - Think
+    validations:
+      required: true
+
+  - type: dropdown
+    id: team
+    attributes:
+      label: Your team
+      options:
+        - Kids
+        - Students
+        - Worship and production
+        - Communications
+        - Operations and admin
+        - Care
+        - Groups
+        - Leadership
+        - Other
+    validations:
+      required: true
+
+  - type: textarea
+    id: summary
+    attributes:
+      label: What problem did it solve?
+    validations:
+      required: true
+
+  - type: textarea
+    id: prompt
+    attributes:
+      label: The prompt you used
+
+  - type: input
+    id: tool
+    attributes:
+      label: Tool used
+
+  - type: input
+    id: timeSaved
+    attributes:
+      label: Time saved
+
+  - type: textarea
+    id: tips
+    attributes:
+      label: Tips for the next person
+
+  - type: textarea
+    id: assetText
+    attributes:
+      label: Reusable text or template
+
+  - type: input
+    id: assetLink
+    attributes:
+      label: Link to a shared file
+
+  - type: input
+    id: contributor
+    attributes:
+      label: Name to show
